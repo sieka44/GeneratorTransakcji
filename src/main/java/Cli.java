@@ -40,7 +40,7 @@ public class Cli {
             generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
             generator.setEventsCount(cmd.getOptionValue("eventsCount", "100"));
             generator.setOutDir(cmd.getOptionValue("outDir", ""));
-
+            generator.generateJson();
         } catch (ParseException e) {
             //LOGGER
             e.printStackTrace();
@@ -49,24 +49,3 @@ public class Cli {
 
 }
 
-/*
-
-java -jar transaction
-        -generator.jar
-        -customerIds 1:20
-        -dateRange "2018-03-08T00:00:00.000-0100":"2018-03-08T23:59:59.999-0100"
-        -itemsFile items.csv
-        -itemsCount 5:15
-        -itemsQuantity 1:30
-        -eventsCount 1000
-        -outDir ./output
-
-        java -jar transaction
-        -generator.jar
-        -customerIds 1:20
-        -dateRange "2018-03-08T00:00:00.000-0100":"2018-03-08T23:59:59.999-0100"
-        -itemsFile items.csv
-        -itemsCount 5:15
-        -itemsQuantity 1:30
-        -eventsCount 1000
- */

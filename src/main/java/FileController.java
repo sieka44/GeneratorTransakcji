@@ -1,14 +1,28 @@
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class FileController {
     List<Product> listOfProducts;
+    Random rnd;
+    double sum = 0.0;
+
+    public double getSumAndReset() {
+        double outcome = sum;
+        sum=0.0;
+        return outcome;
+    }
+
     FileController(String file){
         listOfProducts = new LinkedList<>();
+        rnd = new Random();
         FileReader fileReader = null;
         try {
             fileReader = new FileReader(file);
@@ -23,38 +37,23 @@ public class FileController {
             }
 
         } catch (FileNotFoundException e) {
+            //LOGGER
             e.printStackTrace();
         } catch (IOException e) {
+            //LOGGER
             e.printStackTrace();
         }
+    }
+
+    public JSONObject getRandomObject(int quantity){
+        JSONObject jsonObject = new JSONObject();
+        if(listOfProducts.size()>0) {
+            Product product = listOfProducts.get(rnd.nextInt(listOfProducts.size()));
+            jsonObject.put("name", product.getName());
+            jsonObject.put("quantity", quantity);
+            jsonObject.put("price", product.getPrice());
+            sum+=quantity*product.getPrice();
+        }
+        return jsonObject;
     }
 }
-/*
-private JSONObject createOneProduct(String product){
-        String[] productData = product.split(",");
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name",productData[0]);
-        jsonObject.put("quantity",generateIntegerData(itemsQuantity));
-        jsonObject.put("price",productData[1]);
-
-        return jsonObject;
-
-    }
-
-    private JSONArray readFile(){
-        try {
-            FileReader fileReader = new FileReader(itemsFile);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            JSONArray products = new JSONArray();
-            bufferedReader.readLine();
-
-
-            fileReader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new JSONArray();
-    }
- */

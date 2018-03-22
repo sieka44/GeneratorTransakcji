@@ -1,22 +1,19 @@
-import netscape.javascript.JSObject;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 class Generator {
 
+    FileController fileController;
     private String customerIds;
     private String date;
     private String itemsFile;
@@ -25,7 +22,6 @@ class Generator {
     private String eventsCount;
     private String outDir;
     private double sum = 0.0;
-    FileController fileController;
 
     public void setCustomerIds(String customerIds) {
         this.customerIds = customerIds;
@@ -37,7 +33,7 @@ class Generator {
 
     public void setItemsFile(String itemsFile) {
         this.itemsFile = itemsFile;
-        fileController = new FileController(itemsFile);
+        fileController = new FileController(this.itemsFile);
     }
 
     public void setItemsCount(String itemsCount) {
@@ -56,64 +52,64 @@ class Generator {
         this.outDir = outDir;
     }
 
-    private int generateIntegerData(String data){
+    private int generateIntegerData(String data) {
         String[] minMax = data.split(":");
         Random rnd = new Random();
-        return rnd.nextInt(Integer.parseInt(minMax[1]))+Integer.parseInt(minMax[0]);
+        return rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]);
     }
 
-    private long getRandomTimeBetweenTwoDates (long beginTime, long endTime) {
+    private long getRandomTimeBetweenTwoDates(long beginTime, long endTime) {
         long diff = endTime - beginTime + 1;
         return beginTime + (long) (Math.random() * diff);
     }
 
-    private ZonedDateTime generateDate(){
-        String[] dates =  date.split(":");
+    private ZonedDateTime generateDate() {
+        String[] dates = date.split(":");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        ZonedDateTime startDate = ZonedDateTime.parse(dates[0],formatter);
-        ZonedDateTime endDate = ZonedDateTime.parse(dates[1],formatter);
-        long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(),Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
+        ZonedDateTime startDate = ZonedDateTime.parse(dates[0], formatter);
+        ZonedDateTime endDate = ZonedDateTime.parse(dates[1], formatter);
+        long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
         Instant instant = Instant.ofEpochSecond(randomTime);
-        ZonedDateTime outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant,startDate.getZone()),startDate.getZone());
+        ZonedDateTime outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
 
         return outputDate;
     }
 
-    public boolean generateJson(){
-        JSONObject json = new JSONObject();
-        json.put("id",generateIntegerData("1:10"));
-        json.put("timestamp",generateDate());
-        json.put("customer_id",generateIntegerData(customerIds));
-        JSONArray array = null;
+    private JSONArray generateItems() {
+        int amount = generateIntegerData(itemsCount);
+        JSONArray array = new JSONArray();
+        for (int i = 0; i < amount; i++) {
+            array.add(fileController.getRandomObject(generateIntegerData(itemsQuantity)));
+        }
+        return array;
+    }
 
-        return false;
+    public void generateJson() {
+        int events = generateIntegerData(eventsCount);
+        for (int i = 0; i < events; i++) {
+            JSONObject json = new JSONObject();
+            json.put("id", generateIntegerData("1:10"));
+            json.put("timestamp", generateDate());
+            json.put("customer_id", generateIntegerData(customerIds));
+            JSONArray array = generateItems();
+            json.put("items", array);
+            json.put("sum", fileController.getSumAndReset());
+            saveJson(json, i);
+        }
+    }
+
+    private void saveJson(JSONObject json, int number) {
+        try {
+            String path = System.getProperty("user.dir") + outDir.replace(".", "").replace("\"", "/");
+            File file = new File(path + "/json" + number + ".json");
+            if (!file.createNewFile()) throw new IOException();
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(json.toJSONString());
+            //LOGGER
+        } catch (IOException e) {
+            //LOGGER
+            e.printStackTrace();
+        }
     }
 }
-/*
-        -customerIds 1:20
-        -dateRange "2018-03-08T00:00:00.000-0100":"2018-03-08T23:59:59.999-0100"
-        -itemsFile items.csv
-        -itemsCount 5:15
-        -itemsQuantity 1:30
-        -eventsCount 1000
-        -outDir ./output
-{
-  "id": 1,
-  "timestamp": "2018-03-08T12:31:13.000-0100",
-  "customer_id": 12,
-  "items": [
-    {
-      "name": "bułeczka",
-      "quantity": 3,
-      "price": 1.2
-    },
-    {
-      "name": "mleko 3% 1l",
-      "quantity": 1,
-      "price": 2.3
-    }
-  ],
-  "sum": 4.5
-}
- */
