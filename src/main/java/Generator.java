@@ -1,9 +1,6 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -13,48 +10,39 @@ import java.util.Random;
 
 class Generator {
 
-    FileController fileController;
-    private String customerIds;
-    private String date;
-    private String itemsFile;
-    private String itemsCount;
-    private String itemsQuantity;
-    private String eventsCount;
-    private String outDir;
+    private FileController fileController;
+    private final String customerIds;
+    private final String date;
+    private final String itemsCount;
+    private final String itemsQuantity;
+    private final String eventsCount;
+    private final String outDir;
 
-    public void setCustomerIds(String customerIds) {
+    public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir) {
         this.customerIds = customerIds;
-    }
-
-    public void setDate(String date) {
         this.date = date;
+        this.itemsCount = itemsCount;
+        this.itemsQuantity = itemsQuantity;
+        this.eventsCount = eventsCount;
+        this.outDir = outDir;
     }
 
     public void setItemsFile(String itemsFile) {
-        this.itemsFile = itemsFile;
-        fileController = new FileController(this.itemsFile);
+        fileController = new FileController(itemsFile);
     }
 
-    public void setItemsCount(String itemsCount) {
-        this.itemsCount = itemsCount;
-    }
-
-    public void setItemsQuantity(String itemsQuantity) {
-        this.itemsQuantity = itemsQuantity;
-    }
-
-    public void setEventsCount(String eventsCount) {
-        this.eventsCount = eventsCount;
-    }
-
-    public void setOutDir(String outDir) {
-        this.outDir = outDir;
+    public void setFileController(FileController fileController) {
+        this.fileController = fileController;
     }
 
     private int generateIntegerData(String data) {
         String[] minMax = data.split(":");
         Random rnd = new Random();
-        return rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]);
+        if (minMax.length >= 2) {
+            return rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]);
+        } else {
+            return 0;
+        }
     }
 
     private long getRandomTimeBetweenTwoDates(long beginTime, long endTime) {
@@ -67,15 +55,15 @@ class Generator {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime outputDate = ZonedDateTime.now().withFixedOffsetZone();
-        if (date.length()>29) {
-            String start = date.substring(0,28).replace("\"","");
-            String end = date.substring(29).replace("\"","");
+        if (date.length() > 29) {
+            String start = date.substring(0, 28).replace("\"", "");
+            String end = date.substring(29).replace("\"", "");
             ZonedDateTime startDate = ZonedDateTime.parse(start, formatter);
             ZonedDateTime endDate = ZonedDateTime.parse(end, formatter);
             long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
             Instant instant = Instant.ofEpochSecond(randomTime);
             outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
-        }else {
+        } else {
             System.out.println("błąd w parsowaniu daty");
             //LOGGER
         }
@@ -91,7 +79,7 @@ class Generator {
         return array;
     }
 
-    public JSONObject generateOneJson(){
+    public JSONObject generateOneJson() {
         JSONObject json = new JSONObject();
         json.put("id", generateIntegerData("1:10"));
         json.put("timestamp", generateDate().toString());

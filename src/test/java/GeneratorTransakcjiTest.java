@@ -17,18 +17,17 @@ public class GeneratorTransakcjiTest {
 
     @Test
     public void jsonGeneratorTest(){
-        Generator generator = new Generator();
-        generator.setCustomerIds("1:20");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime date = ZonedDateTime.now();
-        System.out.println(date.format(formatter));
-        generator.setDate(date.withHour(23).withMinute(59).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)+"\"");
+        Generator generator = new Generator("1:20",
+                date.withHour(23).withMinute(59).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter),
+                "1:2",
+                "1:5",
+                "1",
+                ""
+                );
         generator.setItemsFile("items.csv");
-        generator.setItemsCount("1:2");
-        generator.setItemsQuantity("1:5");
-        generator.setEventsCount("1");
-        generator.setOutDir("");
         generator.generateEvents();
     }
 

@@ -9,7 +9,6 @@ public class Cli {
     private Generator generator;
 
     public Cli() {
-        generator = new Generator();
         buildOptions();
     }
 
@@ -31,18 +30,19 @@ public class Cli {
 
     public void parse(String[] args) throws ParseException {
         CommandLineParser parser = new BasicParser();
-
         CommandLine cmd = parser.parse(options, args);
-        generator.setCustomerIds(cmd.getOptionValue("customersIds", "1:20"));
         ZonedDateTime date = ZonedDateTime.now();
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)));
+        generator = new Generator(
+                cmd.getOptionValue("customersIds", "1:20"),
+                cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)),
+                cmd.getOptionValue("itemsCount", "1:5"),
+                cmd.getOptionValue("itemsQuantity", "1:5"),
+                cmd.getOptionValue("eventsCount", "100"),
+                cmd.getOptionValue("outDir", "")
+        );
         generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
-        generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
-        generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
-        generator.setEventsCount(cmd.getOptionValue("eventsCount", "100"));
-        generator.setOutDir(cmd.getOptionValue("outDir", ""));
         generator.generateEvents();
     }
 
