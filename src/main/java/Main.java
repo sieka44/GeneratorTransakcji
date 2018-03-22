@@ -1,5 +1,11 @@
+import org.apache.commons.cli.ParseException;
+
 public class Main {
     public static void main(String[] args) {
-        new Cli().parse(args);
+        try {
+            new Cli().parse(args);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

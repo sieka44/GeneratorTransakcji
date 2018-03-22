@@ -1,18 +1,20 @@
 import org.apache.commons.cli.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Cli {
-    private static final Logger logger = LogManager.getLogger(Cli.class.getName());
-    private Options options = new Options();
+    //private static final Logger logger = LogManager.getLogger(Cli.class.getName());
+    private final Options options = new Options();
     private Generator generator;
 
     public Cli() {
         generator = new Generator();
         buildOptions();
+    }
+
+    public void setGenerator(Generator generator) {
+        this.generator = generator;
     }
 
     private void buildOptions() {
@@ -27,26 +29,21 @@ public class Cli {
         options.addOption("outDir", true, "range of generated product amount");
     }
 
-    public void parse(String[] args) {
+    public void parse(String[] args) throws ParseException {
         CommandLineParser parser = new BasicParser();
 
-        try {
-            CommandLine cmd = parser.parse(options, args);
-            generator.setCustomerIds(cmd.getOptionValue("customersIds", "1:20"));
-            ZonedDateTime date = ZonedDateTime.now();
-            String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-            generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)));
-            generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
-            generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
-            generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
-            generator.setEventsCount(cmd.getOptionValue("eventsCount", "100"));
-            generator.setOutDir(cmd.getOptionValue("outDir", ""));
-            generator.generateJson();
-        } catch (ParseException e) {
-            //LOGGER
-            e.printStackTrace();
-        }
+        CommandLine cmd = parser.parse(options, args);
+        generator.setCustomerIds(cmd.getOptionValue("customersIds", "1:20"));
+        ZonedDateTime date = ZonedDateTime.now();
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)));
+        generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
+        generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
+        generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
+        generator.setEventsCount(cmd.getOptionValue("eventsCount", "100"));
+        generator.setOutDir(cmd.getOptionValue("outDir", ""));
+        generator.generateEvents();
     }
 
 }

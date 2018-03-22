@@ -29,7 +29,7 @@ public class GeneratorTransakcjiTest {
         generator.setItemsQuantity("1:5");
         generator.setEventsCount("1");
         generator.setOutDir("");
-        generator.generateJson();
+        generator.generateEvents();
     }
 
 }

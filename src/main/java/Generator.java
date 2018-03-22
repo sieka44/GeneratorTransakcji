@@ -91,37 +91,24 @@ class Generator {
         return array;
     }
 
-    public void generateJson() {
+    public JSONObject generateOneJson(){
+        JSONObject json = new JSONObject();
+        json.put("id", generateIntegerData("1:10"));
+        json.put("timestamp", generateDate().toString());
+        json.put("customer_id", generateIntegerData(customerIds));
+        JSONArray array = generateItems();
+        json.put("items", array);
+        json.put("sum", fileController.getSumAndReset());
+        return json;
+    }
+
+    public void generateEvents() {
         int events = Integer.parseInt(eventsCount);
+        FileJsonWriter fileJsonWriter = new FileJsonWriter();
         for (int i = 0; i < events; i++) {
-            JSONObject json = new JSONObject();
-            json.put("id", generateIntegerData("1:10"));
-            json.put("timestamp", generateDate().toString());
-            json.put("customer_id", generateIntegerData(customerIds));
-            JSONArray array = generateItems();
-            json.put("items", array);
-            json.put("sum", fileController.getSumAndReset());
-            //System.out.println(json.toString());
-            saveJson(json, i);
+            JSONObject json = generateOneJson();
+            fileJsonWriter.saveJson(json, i, outDir);
         }
     }
 
-    private void saveJson(JSONObject json, int number) {
-        try {
-            String path = System.getProperty("user.dir") + outDir.replace(".", "").replace("\"", "/");
-            File file = new File(path + "/json" + (number+1) + ".json");
-            File parent = file.getParentFile();
-            if (!parent.exists() && !parent.mkdirs()) {
-                throw new IllegalStateException("Couldn't create dir: " + parent);
-            }else {
-                FileWriter fileWriter = new FileWriter(file);
-                fileWriter.write(json.toJSONString());
-                fileWriter.close();
-            }
-            //LOGGER
-        } catch (IOException e) {
-            //LOGGER
-            e.printStackTrace();
-        }
-    }
 }
