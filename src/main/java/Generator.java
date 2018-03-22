@@ -21,7 +21,6 @@ class Generator {
     private String itemsQuantity;
     private String eventsCount;
     private String outDir;
-    private double sum = 0.0;
 
     public void setCustomerIds(String customerIds) {
         this.customerIds = customerIds;
@@ -64,11 +63,12 @@ class Generator {
     }
 
     private ZonedDateTime generateDate() {
-        String[] dates = date.split(":");
+        String[] dates = date.split("\":\"");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        ZonedDateTime startDate = ZonedDateTime.parse(dates[0], formatter);
-        ZonedDateTime endDate = ZonedDateTime.parse(dates[1], formatter);
+        System.out.println(dates[0] + " --- "+ dates[1]);
+        ZonedDateTime startDate = ZonedDateTime.parse(dates[0].replace("\"",""), formatter);
+        ZonedDateTime endDate = ZonedDateTime.parse(dates[1].replace("\"",""), formatter);
         long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
         Instant instant = Instant.ofEpochSecond(randomTime);
         ZonedDateTime outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
@@ -86,15 +86,16 @@ class Generator {
     }
 
     public void generateJson() {
-        int events = generateIntegerData(eventsCount);
+        int events = Integer.parseInt(eventsCount);
         for (int i = 0; i < events; i++) {
             JSONObject json = new JSONObject();
             json.put("id", generateIntegerData("1:10"));
-            json.put("timestamp", generateDate());
+            json.put("timestamp", generateDate().toString());
             json.put("customer_id", generateIntegerData(customerIds));
             JSONArray array = generateItems();
             json.put("items", array);
             json.put("sum", fileController.getSumAndReset());
+            System.out.println(json.toString());
             saveJson(json, i);
         }
     }
@@ -102,8 +103,8 @@ class Generator {
     private void saveJson(JSONObject json, int number) {
         try {
             String path = System.getProperty("user.dir") + outDir.replace(".", "").replace("\"", "/");
-            File file = new File(path + "/json" + number + ".json");
-            if (!file.createNewFile()) throw new IOException();
+            File file = new File(path + "/json" + (number+1) + ".json");
+            //if (!file.createNewFile()) throw new IOException();
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(json.toJSONString());
             //LOGGER

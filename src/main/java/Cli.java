@@ -2,7 +2,6 @@ import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 public class Cli {
@@ -35,7 +34,7 @@ public class Cli {
             generator.setCustomerIds(cmd.getOptionValue("customersIds", "1:20"));
             ZonedDateTime date = ZonedDateTime.now();
             generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).toString() + ":" + date.withHour(23).withMinute(59).toString()));
-            generator.setItemsFile(cmd.getOptionValue("itemsFile", "item.csv"));
+            generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
             generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
             generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
             generator.setEventsCount(cmd.getOptionValue("eventsCount", "100"));
