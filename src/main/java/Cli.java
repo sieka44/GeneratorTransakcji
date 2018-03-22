@@ -36,7 +36,7 @@ public class Cli {
             ZonedDateTime date = ZonedDateTime.now();
             String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-            generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + "\":\"" + date.withHour(23).withMinute(59).format(formatter)));
+            generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)));
             generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
             generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
             generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));

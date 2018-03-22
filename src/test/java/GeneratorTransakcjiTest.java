@@ -23,7 +23,7 @@ public class GeneratorTransakcjiTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime date = ZonedDateTime.now();
         System.out.println(date.format(formatter));
-        generator.setDate(date.withHour(23).withMinute(59).format(formatter) + "\":\"" + date.withHour(23).withMinute(59).format(formatter)+"\"");
+        generator.setDate(date.withHour(23).withMinute(59).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)+"\"");
         generator.setItemsFile("items.csv");
         generator.setItemsCount("1:2");
         generator.setItemsQuantity("1:5");

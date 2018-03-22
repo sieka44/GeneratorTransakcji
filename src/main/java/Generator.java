@@ -63,16 +63,22 @@ class Generator {
     }
 
     private ZonedDateTime generateDate() {
-        String[] dates = date.split("\":\"");
+        //System.out.println(date);
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        System.out.println(dates[0].replace("\"","") + " --- "+ dates[1]);
-        ZonedDateTime startDate = ZonedDateTime.parse(dates[0].replace("\"",""), formatter);
-        ZonedDateTime endDate = ZonedDateTime.parse(dates[1].replace("\"",""), formatter);
-        long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
-        Instant instant = Instant.ofEpochSecond(randomTime);
-        ZonedDateTime outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
-        System.out.println(outputDate.getYear());
+        ZonedDateTime outputDate = ZonedDateTime.now().withFixedOffsetZone();
+        if (date.length()>29) {
+            String start = date.substring(0,28).replace("\"","");
+            String end = date.substring(29).replace("\"","");
+            ZonedDateTime startDate = ZonedDateTime.parse(start, formatter);
+            ZonedDateTime endDate = ZonedDateTime.parse(end, formatter);
+            long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
+            Instant instant = Instant.ofEpochSecond(randomTime);
+            outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
+        }else {
+            System.out.println("błąd w parsowaniu daty");
+            //LOGGER
+        }
         return outputDate;
     }
 
@@ -95,7 +101,7 @@ class Generator {
             JSONArray array = generateItems();
             json.put("items", array);
             json.put("sum", fileController.getSumAndReset());
-            System.out.println(json.toString());
+            //System.out.println(json.toString());
             saveJson(json, i);
         }
     }
@@ -104,10 +110,14 @@ class Generator {
         try {
             String path = System.getProperty("user.dir") + outDir.replace(".", "").replace("\"", "/");
             File file = new File(path + "/json" + (number+1) + ".json");
-            //if (!file.createNewFile()) throw new IOException();
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(json.toJSONString());
-            fileWriter.close();
+            File parent = file.getParentFile();
+            if (!parent.exists() && !parent.mkdirs()) {
+                throw new IllegalStateException("Couldn't create dir: " + parent);
+            }else {
+                FileWriter fileWriter = new FileWriter(file);
+                fileWriter.write(json.toJSONString());
+                fileWriter.close();
+            }
             //LOGGER
         } catch (IOException e) {
             //LOGGER
