@@ -66,13 +66,13 @@ class Generator {
         String[] dates = date.split("\":\"");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        System.out.println(dates[0] + " --- "+ dates[1]);
+        System.out.println(dates[0].replace("\"","") + " --- "+ dates[1]);
         ZonedDateTime startDate = ZonedDateTime.parse(dates[0].replace("\"",""), formatter);
         ZonedDateTime endDate = ZonedDateTime.parse(dates[1].replace("\"",""), formatter);
         long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
         Instant instant = Instant.ofEpochSecond(randomTime);
         ZonedDateTime outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
-
+        System.out.println(outputDate.getYear());
         return outputDate;
     }
 
@@ -107,6 +107,7 @@ class Generator {
             //if (!file.createNewFile()) throw new IOException();
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(json.toJSONString());
+            fileWriter.close();
             //LOGGER
         } catch (IOException e) {
             //LOGGER

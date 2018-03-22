@@ -19,8 +19,11 @@ public class GeneratorTransakcjiTest {
     public void jsonGeneratorTest(){
         Generator generator = new Generator();
         generator.setCustomerIds("1:20");
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime date = ZonedDateTime.now();
-        generator.setDate("\"2018-03-08T00:00:00.000-0100\""+":"+"\"2018-03-08T23:59:59.999-0100\"");
+        System.out.println(date.format(formatter));
+        generator.setDate(date.withHour(23).withMinute(59).format(formatter) + "\":\"" + date.withHour(23).withMinute(59).format(formatter)+"\"");
         generator.setItemsFile("items.csv");
         generator.setItemsCount("1:2");
         generator.setItemsQuantity("1:5");

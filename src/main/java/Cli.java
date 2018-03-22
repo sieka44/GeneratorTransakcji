@@ -3,6 +3,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Cli {
     private static final Logger logger = LogManager.getLogger(Cli.class.getName());
@@ -33,7 +34,9 @@ public class Cli {
             CommandLine cmd = parser.parse(options, args);
             generator.setCustomerIds(cmd.getOptionValue("customersIds", "1:20"));
             ZonedDateTime date = ZonedDateTime.now();
-            generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).toString() + ":" + date.withHour(23).withMinute(59).toString()));
+            String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+            generator.setDate(cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + "\":\"" + date.withHour(23).withMinute(59).format(formatter)));
             generator.setItemsFile(cmd.getOptionValue("itemsFile", "items.csv"));
             generator.setItemsCount(cmd.getOptionValue("itemsCount", "1:5"));
             generator.setItemsQuantity(cmd.getOptionValue("itemsQuantity", "1:5"));
