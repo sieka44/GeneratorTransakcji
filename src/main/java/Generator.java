@@ -29,13 +29,6 @@ class Generator {
         jsonWriter = new FileJsonWriter();
     }
 
-    public void setEventsCount(String eventsCount) {
-        this.eventsCount = eventsCount;
-    }
-
-    public void setJsonWriter(FileJsonWriter jsonWriter) {
-        this.jsonWriter = jsonWriter;
-    }
 
     public void setCustomerIds(String customerIds) {
         this.customerIds = customerIds;

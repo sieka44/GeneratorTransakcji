@@ -8,8 +8,6 @@ import org.mockito.Mockito;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.mockito.Mockito.times;
-
 public class GeneratorTest {
 
     Generator generator;
@@ -49,22 +47,4 @@ public class GeneratorTest {
         Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));// && startDate.isBefore(endDate));
         Assert.assertTrue(0 < itemsCount && itemsCount <= 5);
     }
-
-//    @Test
-//    public void eventsTest(){
-//        FileController fileController = Mockito.mock(FileController.class);
-//        Mockito.when(fileController.getSumAndReset()).thenReturn(0.0);
-//        FileJsonWriter xD = new FileJsonWriter();
-//        FileJsonWriter fileJsonWriter = Mockito.spy(xD);
-//        Mockito.doNothing().when(fileJsonWriter).saveJson(Mockito.any(),Mockito.any(),Mockito.any());
-//        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-//        ZonedDateTime startDate = ZonedDateTime.now().withFixedOffsetZone();
-//        ZonedDateTime endDate = startDate.plusDays(1);
-//        generator.setDate(startDate.format(formatter) + ":" + endDate.format(formatter));
-//        generator.setFileController(fileController);
-//        generator.setJsonWriter(fileJsonWriter);
-//        generator.setEventsCount("5");
-//        generator.generateEvents();
-//    }
 }
