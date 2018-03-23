@@ -11,12 +11,13 @@ import java.util.Random;
 class Generator {
 
     private FileController fileController;
-    private final String customerIds;
-    private final String date;
-    private final String itemsCount;
-    private final String itemsQuantity;
-    private final String eventsCount;
-    private final String outDir;
+    private String customerIds;
+    private String date;
+    private String itemsCount;
+    private String itemsQuantity;
+    private String eventsCount;
+    private String outDir;
+    private FileJsonWriter jsonWriter;
 
     public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir) {
         this.customerIds = customerIds;
@@ -25,6 +26,27 @@ class Generator {
         this.itemsQuantity = itemsQuantity;
         this.eventsCount = eventsCount;
         this.outDir = outDir;
+        jsonWriter = new FileJsonWriter();
+    }
+
+    public void setEventsCount(String eventsCount) {
+        this.eventsCount = eventsCount;
+    }
+
+    public void setJsonWriter(FileJsonWriter jsonWriter) {
+        this.jsonWriter = jsonWriter;
+    }
+
+    public void setCustomerIds(String customerIds) {
+        this.customerIds = customerIds;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setItemsCount(String itemsCount) {
+        this.itemsCount = itemsCount;
     }
 
     public void setItemsFile(String itemsFile) {
@@ -51,17 +73,16 @@ class Generator {
     }
 
     private ZonedDateTime generateDate() {
-        //System.out.println(date);
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        ZonedDateTime outputDate = ZonedDateTime.now().withFixedOffsetZone();
+        ZonedDateTime outputDate = null;// ZonedDateTime.now().withFixedOffsetZone();
         if (date.length() > 29) {
             String start = date.substring(0, 28).replace("\"", "");
             String end = date.substring(29).replace("\"", "");
             ZonedDateTime startDate = ZonedDateTime.parse(start, formatter);
             ZonedDateTime endDate = ZonedDateTime.parse(end, formatter);
             long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
-            Instant instant = Instant.ofEpochSecond(randomTime);
+            Instant instant = Instant.ofEpochMilli(randomTime);
             outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
         } else {
             System.out.println("błąd w parsowaniu daty");
@@ -92,10 +113,9 @@ class Generator {
 
     public void generateEvents() {
         int events = Integer.parseInt(eventsCount);
-        FileJsonWriter fileJsonWriter = new FileJsonWriter();
         for (int i = 0; i < events; i++) {
             JSONObject json = generateOneJson();
-            fileJsonWriter.saveJson(json, i, outDir);
+            jsonWriter.saveJson(json, i, outDir);
         }
     }
 
