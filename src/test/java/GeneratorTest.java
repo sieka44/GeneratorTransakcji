@@ -19,7 +19,7 @@ public class GeneratorTest {
 
     @Test(expected = NullPointerException.class)
     public void wrongDateTest() {
-        FileController fileController = Mockito.mock(FileController.class);
+        FileInputController fileController = Mockito.mock(FileInputController.class);
         Mockito.when(fileController.getSumAndReset()).thenReturn(0.0);
         generator.setFileController(fileController);
         generator.generateOneJson();
@@ -27,9 +27,9 @@ public class GeneratorTest {
 
     @Test
     public void correctDataTest() {
-        FileController fileController = Mockito.mock(FileController.class);
-        Mockito.when(fileController.getSumAndReset()).thenReturn(0.0);
-        generator.setFileController(fileController);
+        FileInputController fileInputController = Mockito.mock(FileInputController.class);
+        Mockito.when(fileInputController.getSumAndReset()).thenReturn(0.0);
+        generator.setFileController(fileInputController);
         generator.setCustomerIds("1:5");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
@@ -46,5 +46,17 @@ public class GeneratorTest {
         Assert.assertTrue(0 < customerID && customerID <= 5);
         Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));// && startDate.isBefore(endDate));
         Assert.assertTrue(0 < itemsCount && itemsCount <= 5);
+    }
+
+    @Test
+    public void generateEventsTest() {
+        int eventCount = 10;
+        generator.setEventsCount(Integer.toString(eventCount));
+        FileJsonWriter jsonWriter = Mockito.mock(FileJsonWriter.class);
+        Generator uut = Mockito.spy(generator);
+        Mockito.doReturn(new JSONObject()).when(uut).generateOneJson();
+        uut.setJsonWriter(jsonWriter);
+        uut.generateEvents();
+        Mockito.verify(uut, Mockito.times(eventCount)).generateOneJson();
     }
 }

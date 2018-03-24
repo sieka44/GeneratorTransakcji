@@ -10,7 +10,7 @@ import java.util.Random;
 
 class Generator {
 
-    private FileController fileController;
+    private FileInputController fileController;
     private String customerIds;
     private String date;
     private String itemsCount;
@@ -29,6 +29,9 @@ class Generator {
         jsonWriter = new FileJsonWriter();
     }
 
+    public void setJsonWriter(FileJsonWriter jsonWriter) {
+        this.jsonWriter = jsonWriter;
+    }
 
     public void setCustomerIds(String customerIds) {
         this.customerIds = customerIds;
@@ -43,10 +46,10 @@ class Generator {
     }
 
     public void setItemsFile(String itemsFile) {
-        fileController = new FileController(itemsFile);
+        fileController = new FileInputController(itemsFile);
     }
 
-    public void setFileController(FileController fileController) {
+    public void setFileController(FileInputController fileController) {
         this.fileController = fileController;
     }
 
@@ -77,9 +80,6 @@ class Generator {
             long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
             Instant instant = Instant.ofEpochMilli(randomTime);
             outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
-        } else {
-            System.out.println("błąd w parsowaniu daty");
-            //LOGGER
         }
         return outputDate;
     }
@@ -102,6 +102,10 @@ class Generator {
         json.put("items", array);
         json.put("sum", fileController.getSumAndReset());
         return json;
+    }
+
+    public void setEventsCount(String eventsCount) {
+        this.eventsCount = eventsCount;
     }
 
     public void generateEvents() {
