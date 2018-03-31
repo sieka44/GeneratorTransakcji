@@ -1,19 +1,21 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 public class FileInputController {
+    private static final Logger LOGGER = LogManager.getLogger(FileInputController.class.getName());
     private List<Product> listOfProducts;
     private Random rnd;
     private double sum = 0.0;
 
     FileInputController(String path) {
+        LOGGER.entry(this);
         listOfProducts = new LinkedList<>();
         rnd = new Random();
         FileReader fileReader = null;
@@ -24,14 +26,19 @@ public class FileInputController {
             bufferedReader.readLine();
             while (true) {
                 String currLine = bufferedReader.readLine();
+                LOGGER.debug("Current Line to parse:" + currLine);
                 if (currLine != null) {
                     String[] product = currLine.split(",");
                     listOfProducts.add(new Product(product[0], Double.parseDouble(product[1])));
                 } else break;
             }
+            LOGGER.info("Successful read file.");
 
-        } catch (IOException e) {
-            //LOGGER
+        } catch (FileNotFoundException e){
+            LOGGER.error("No source csv.",new FileNotFoundException("FileNotFoundExcept"));
+        }
+        catch (IOException e) {
+            LOGGER.error("Unexpected Error:" + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -39,6 +46,7 @@ public class FileInputController {
     public double getSumAndReset() {
         double outcome = sum;
         sum = 0.0;
+        LOGGER.trace("sum has been reset: " + outcome + " -> "+ sum);
         return outcome;
     }
 
@@ -51,6 +59,9 @@ public class FileInputController {
             jsonObject.put("price", product.getPrice());
             sum += (double) ((int) (product.getPrice() * 100) * quantity) / 100;
         }
+        if (jsonObject.isEmpty()) LOGGER.warn("Empty JSONObject.");
+        else LOGGER.debug("GetRandomObject returned: "+jsonObject.toJSONString());
+
         return jsonObject;
     }
 }

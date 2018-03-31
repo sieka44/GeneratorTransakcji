@@ -15,10 +15,4 @@ public class FileJsonWriterTest {
         Assert.assertTrue(fileUnderTest.exists());
         if (!fileUnderTest.delete()) throw new FileNotFoundException();
     }
-
-//    @Test
-//    public void wrongDirTest() {
-//        uut.saveJson(new JSONObject(), 10, "./testFolder/test1/cos/nie");
-//        File file = File
-//    }
 }

@@ -1,19 +1,17 @@
 import org.apache.commons.cli.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Cli {
-    //private static final Logger logger = LogManager.getLogger(Cli.class.getName());
+    private static final Logger LOGGER = LogManager.getLogger(Cli.class.getName());
     private final Options options = new Options();
     private Generator generator;
 
-    public Cli() {
+    Cli() {
         buildOptions();
-    }
-
-    public void setGenerator(Generator generator) {
-        this.generator = generator;
     }
 
     private void buildOptions() {
@@ -26,6 +24,7 @@ public class Cli {
         options.addOption("itemsQuantity", true, "range of generated product amount");
         options.addOption("eventsCount", true, "range of generated product amount");
         options.addOption("outDir", true, "range of generated product amount");
+        LOGGER.info("Options has been build");
     }
 
     public void parse(String[] args) throws ParseException {
@@ -34,6 +33,12 @@ public class Cli {
         ZonedDateTime date = ZonedDateTime.now();
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        if(!cmd.hasOption("customersIds"))LOGGER.warn("Set default value for customersIds.");
+        if(!cmd.hasOption("dateRange"))LOGGER.warn("Set default value for dateRange.");
+        if(!cmd.hasOption("itemsCount"))LOGGER.warn("Set default value for itemsCount.");
+        if(!cmd.hasOption("itemsQuantity"))LOGGER.warn("Set default value for itemsQuantity.");
+        if(!cmd.hasOption("eventsCount"))LOGGER.warn("Set default value for eventsCount.");
+        if(!cmd.hasOption("outDir"))LOGGER.warn("Set default value for outDir.");
         generator = new Generator(
                 cmd.getOptionValue("customersIds", "1:20"),
                 cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)),

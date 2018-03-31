@@ -1,3 +1,5 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -9,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
 class Generator {
+    private static final Logger LOGGER = LogManager.getLogger(Generator.class.getName());
 
     private FileInputController fileController;
     private String customerIds;
@@ -53,44 +56,55 @@ class Generator {
         this.fileController = fileController;
     }
 
+    public void setEventsCount(String eventsCount) {
+        this.eventsCount = eventsCount;
+    }
+
     private int generateIntegerData(String data) {
         String[] minMax = data.split(":");
         Random rnd = new Random();
         if (minMax.length >= 2) {
-            return rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]);
+            LOGGER.trace("Random value between:" + minMax[0] + " and " + minMax[1]);
+            return LOGGER.traceExit(rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]));
         } else {
-            return 0;
+            LOGGER.error("Cannot parse ot int: " + data);
+            return LOGGER.traceExit(0);
         }
     }
 
     private long getRandomTimeBetweenTwoDates(long beginTime, long endTime) {
+        LOGGER.trace("Start long:" + beginTime + ", end long " + endTime);
         long diff = endTime - beginTime + 1;
-        return beginTime + (long) (Math.random() * diff);
+        return LOGGER.traceExit(beginTime + (long) (Math.random() * diff));
     }
 
     private ZonedDateTime generateDate() {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        ZonedDateTime outputDate = null;// ZonedDateTime.now().withFixedOffsetZone();
+        ZonedDateTime outputDate = null;
         if (date.length() > 29) {
             String start = date.substring(0, 28).replace("\"", "");
             String end = date.substring(29).replace("\"", "");
             ZonedDateTime startDate = ZonedDateTime.parse(start, formatter);
             ZonedDateTime endDate = ZonedDateTime.parse(end, formatter);
+            LOGGER.trace("Start date : " + startDate + ", end date : " + endDate);
             long randomTime = getRandomTimeBetweenTwoDates(Timestamp.valueOf(startDate.toLocalDateTime()).getTime(), Timestamp.valueOf(endDate.toLocalDateTime()).getTime());
             Instant instant = Instant.ofEpochMilli(randomTime);
             outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
+        } else {
+            LOGGER.error("Cannot parse to date: " + date);
         }
-        return outputDate;
+        return LOGGER.traceExit(outputDate);
     }
 
     private JSONArray generateItems() {
         int amount = generateIntegerData(itemsCount);
+        LOGGER.trace("Drawn items quantity: " + amount);
         JSONArray array = new JSONArray();
         for (int i = 0; i < amount; i++) {
             array.add(fileController.getRandomObject(generateIntegerData(itemsQuantity)));
         }
-        return array;
+        return LOGGER.traceExit( array );
     }
 
     public JSONObject generateOneJson() {
@@ -101,15 +115,13 @@ class Generator {
         JSONArray array = generateItems();
         json.put("items", array);
         json.put("sum", fileController.getSumAndReset());
+        LOGGER.info("JSON generated:" + json.toJSONString());
         return json;
-    }
-
-    public void setEventsCount(String eventsCount) {
-        this.eventsCount = eventsCount;
     }
 
     public void generateEvents() {
         int events = Integer.parseInt(eventsCount);
+        LOGGER.trace("Events: "+events);
         for (int i = 0; i < events; i++) {
             JSONObject json = generateOneJson();
             jsonWriter.saveJson(json, i, outDir);

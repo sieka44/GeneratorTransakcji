@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="WARN">
+    <appenders>
+        <Console name="JSONConsole" target="SYSTEM_OUT">
+            <JsonLayout complete="true" compact="false"/>
+        </Console>
+
+        <RollingFile name="MyFile" fileName="logs/app.log" filePattern="logs/logs-%d{yyyy-MM-dd-HH-mm-ss}.log">
+            <PatternLayout pattern="%d{yyyy-mm-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 KB"/>
+            </Policies>
+        </RollingFile>
+    </appenders>
+
+    <loggers>
+        <root level="debug">
+            <appender-ref ref="JSONConsole" level="info"/>
+            <appender-ref ref="MyFile" level="trace"/>
+        </root>
+    </loggers>
+</configuration>
