@@ -1,3 +1,5 @@
+package fileWriter;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -6,9 +8,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class FileJsonWriter {
+public class FileJsonWriter implements fileWriter.FileWriter {
     private static final Logger LOGGER = LogManager.getLogger(FileJsonWriter.class.getName());
-    public void saveJson(JSONObject json, int idNumber, String outDir) {
+    @Override
+    public void saveData(JSONObject json, int idNumber, String outDir) {
         try {
             String path = System.getProperty("user.dir") + outDir.replace(".", "").replace("\"", "/");
             File file = new File(path + "/json" + (idNumber + 1) + ".json");

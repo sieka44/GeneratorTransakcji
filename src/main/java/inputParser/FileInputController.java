@@ -1,9 +1,10 @@
+package inputParser;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import java.io.*;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +15,7 @@ public class FileInputController {
     private Random rnd;
     private double sum = 0.0;
 
-    FileInputController(String path) {
+    public FileInputController(String path) {
         LOGGER.entry(this);
         listOfProducts = new LinkedList<>();
         rnd = new Random();

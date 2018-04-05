@@ -1,3 +1,4 @@
+import fileWriter.FileJsonWriter;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +11,7 @@ public class FileJsonWriterTest {
 
     @Test
     public void creationTest() throws FileNotFoundException {
-        uut.saveJson(new JSONObject(), 0, "./testFolder");
+        uut.saveData(new JSONObject(), 0, "./testFolder");
         File fileUnderTest = new File("testFolder/json1.json");
         Assert.assertTrue(fileUnderTest.exists());
         if (!fileUnderTest.delete()) throw new FileNotFoundException();

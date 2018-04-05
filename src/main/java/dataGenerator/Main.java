@@ -1,3 +1,6 @@
+package dataGenerator;
+
+import inputParser.Cli;
 import org.apache.commons.cli.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

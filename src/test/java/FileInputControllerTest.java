@@ -1,15 +1,10 @@
+import inputParser.FileInputController;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class FileInputControllerTest {
     FileInputController uut = new FileInputController("src\\test\\resources\\underTest.csv");
-
-//    @Test(expected = FileNotFoundException.class)
-//    public void noFileTest() {
-//        uut = new FileInputController("notAPath_String[[");
-//
-//    }
 
     @Test
     public void getRandomObjectTest() {

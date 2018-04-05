@@ -1,3 +1,6 @@
+import dataGenerator.Generator;
+import fileWriter.FileJsonWriter;
+import inputParser.FileInputController;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.junit.Assert;
@@ -37,12 +40,12 @@ public class GeneratorTest {
         ZonedDateTime endDate = startDate.plusDays(1);
         generator.setDate(startDate.format(formatter) + ":" + endDate.format(formatter));
         generator.setItemsCount("1:5");
-        //when
+
         JSONObject json = generator.generateOneJson();
         int customerID = Integer.parseInt(json.get("customer_id").toString());
         ZonedDateTime dateTime = ZonedDateTime.parse(json.get("timestamp").toString());
         int itemsCount = ((JSONArray) json.get("items")).size();
-        //then
+
         Assert.assertTrue(0 < customerID && customerID <= 5);
         Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));// && startDate.isBefore(endDate));
         Assert.assertTrue(0 < itemsCount && itemsCount <= 5);
@@ -55,7 +58,7 @@ public class GeneratorTest {
         FileJsonWriter jsonWriter = Mockito.mock(FileJsonWriter.class);
         Generator uut = Mockito.spy(generator);
         Mockito.doReturn(new JSONObject()).when(uut).generateOneJson();
-        uut.setJsonWriter(jsonWriter);
+        uut.setWriter(jsonWriter);
         uut.generateEvents();
         Mockito.verify(uut, Mockito.times(eventCount)).generateOneJson();
     }

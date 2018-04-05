@@ -1,3 +1,8 @@
+package dataGenerator;
+
+import fileWriter.FileJsonWriter;
+import fileWriter.FileWriter;
+import inputParser.FileInputController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
@@ -10,7 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
-class Generator {
+public class Generator {
     private static final Logger LOGGER = LogManager.getLogger(Generator.class.getName());
 
     private FileInputController fileController;
@@ -20,7 +25,7 @@ class Generator {
     private String itemsQuantity;
     private String eventsCount;
     private String outDir;
-    private FileJsonWriter jsonWriter;
+    private FileWriter writer;
 
     public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir) {
         this.customerIds = customerIds;
@@ -29,11 +34,11 @@ class Generator {
         this.itemsQuantity = itemsQuantity;
         this.eventsCount = eventsCount;
         this.outDir = outDir;
-        jsonWriter = new FileJsonWriter();
+        writer = new FileJsonWriter();
     }
 
-    public void setJsonWriter(FileJsonWriter jsonWriter) {
-        this.jsonWriter = jsonWriter;
+    public void setWriter(FileWriter jsonWriter) {
+        this.writer = jsonWriter;
     }
 
     public void setCustomerIds(String customerIds) {
@@ -64,8 +69,10 @@ class Generator {
         String[] minMax = data.split(":");
         Random rnd = new Random();
         if (minMax.length >= 2) {
-            LOGGER.trace("Random value between:" + minMax[0] + " and " + minMax[1]);
-            return LOGGER.traceExit(rnd.nextInt(Integer.parseInt(minMax[1])) + Integer.parseInt(minMax[0]));
+            int min = Integer.parseInt(minMax[0]);
+            int max = Integer.parseInt(minMax[1]);
+            LOGGER.trace("Random value between:" + min + " and " + max);
+            return LOGGER.traceExit( min + rnd.nextInt(max - min +1) );
         } else {
             LOGGER.error("Cannot parse ot int: " + data);
             return LOGGER.traceExit(0);
@@ -104,7 +111,7 @@ class Generator {
         for (int i = 0; i < amount; i++) {
             array.add(fileController.getRandomObject(generateIntegerData(itemsQuantity)));
         }
-        return LOGGER.traceExit( array );
+        return LOGGER.traceExit(array);
     }
 
     public JSONObject generateOneJson() {
@@ -121,10 +128,10 @@ class Generator {
 
     public void generateEvents() {
         int events = Integer.parseInt(eventsCount);
-        LOGGER.trace("Events: "+events);
+        LOGGER.trace("Events: " + events);
         for (int i = 0; i < events; i++) {
             JSONObject json = generateOneJson();
-            jsonWriter.saveJson(json, i, outDir);
+            writer.saveData(json, i, outDir);
         }
     }
 

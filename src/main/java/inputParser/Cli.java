@@ -1,3 +1,6 @@
+package inputParser;
+
+import dataGenerator.Generator;
 import org.apache.commons.cli.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +13,7 @@ public class Cli {
     private final Options options = new Options();
     private Generator generator;
 
-    Cli() {
+    public Cli() {
         buildOptions();
     }
 
