@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -109,7 +110,7 @@ public class Generator {
         LOGGER.trace("Drawn items quantity: " + amount);
         JSONArray array = new JSONArray();
         for (int i = 0; i < amount; i++) {
-            array.add(fileController.getRandomObject(generateIntegerData(itemsQuantity)));
+            array.add(fileController.getRandomObject(BigDecimal.valueOf(generateIntegerData(itemsQuantity))));
         }
         return LOGGER.traceExit(array);
     }

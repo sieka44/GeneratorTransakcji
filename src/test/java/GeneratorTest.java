@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -23,7 +24,7 @@ public class GeneratorTest {
     @Test(expected = NullPointerException.class)
     public void wrongDateTest() {
         FileInputController fileController = Mockito.mock(FileInputController.class);
-        Mockito.when(fileController.getSumAndReset()).thenReturn(0.0);
+        Mockito.when(fileController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
         generator.setFileController(fileController);
         generator.generateOneJson();
     }
@@ -31,7 +32,7 @@ public class GeneratorTest {
     @Test
     public void correctDataTest() {
         FileInputController fileInputController = Mockito.mock(FileInputController.class);
-        Mockito.when(fileInputController.getSumAndReset()).thenReturn(0.0);
+        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
         generator.setFileController(fileInputController);
         generator.setCustomerIds("1:5");
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

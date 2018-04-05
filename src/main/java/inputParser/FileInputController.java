@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -13,7 +15,7 @@ public class FileInputController {
     private static final Logger LOGGER = LogManager.getLogger(FileInputController.class.getName());
     private List<Product> listOfProducts;
     private Random rnd;
-    private double sum = 0.0;
+    private BigDecimal sum = BigDecimal.ZERO;
 
     public FileInputController(String path) {
         LOGGER.entry(this);
@@ -44,21 +46,21 @@ public class FileInputController {
         }
     }
 
-    public double getSumAndReset() {
-        double outcome = sum;
-        sum = 0.0;
+    public BigDecimal getSumAndReset() {
+        BigDecimal outcome = sum;
+        sum = BigDecimal.ZERO;
         LOGGER.trace("sum has been reset: " + outcome + " -> "+ sum);
         return outcome;
     }
 
-    public JSONObject getRandomObject(Integer quantity) {
+    public JSONObject getRandomObject(BigDecimal quantity) {
         JSONObject jsonObject = new JSONObject();
         if (listOfProducts.size() > 0) {
             Product product = listOfProducts.get(rnd.nextInt(listOfProducts.size()));
             jsonObject.put("name", product.getName());
             jsonObject.put("quantity", quantity);
             jsonObject.put("price", product.getPrice());
-            sum += (double) ((int) (product.getPrice() * 100) * quantity) / 100;
+            sum = BigDecimal.valueOf( product.getPrice()).multiply(quantity).add(sum);
         }
         if (jsonObject.isEmpty()) LOGGER.warn("Empty JSONObject.");
         else LOGGER.debug("GetRandomObject returned: "+jsonObject.toJSONString());
