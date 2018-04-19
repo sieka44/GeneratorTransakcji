@@ -10,12 +10,15 @@ public class FileInputControllerTest {
 
     @Test
     public void getRandomObjectTest() {
+        //given
         BigDecimal amount =  BigDecimal.valueOf(431);
+        //when
         JSONObject json = uut.getRandomObject(amount);
         String name = json.get("name").toString();
         String quantity = json.get("quantity").toString();
         String price = json.get("price").toString();
         BigDecimal sum = BigDecimal.valueOf(431).multiply(BigDecimal.valueOf(2.53));
+        //then
         Assert.assertEquals(uut.getSumAndReset(), sum);
         Assert.assertEquals("\"TestObjectNR1\"", name);
         Assert.assertEquals("431", quantity);

@@ -15,7 +15,6 @@ public class GeneratorTransakcjiTest {
     public void jsonGeneratorTest(){
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        Cli cli = new Cli();
         ZonedDateTime date = ZonedDateTime.now();
         Generator generator = new Generator("1:20",
                 date.withHour(23).withMinute(59).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter),
