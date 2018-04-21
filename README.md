@@ -4,7 +4,7 @@
 1. Wejdź w konsoli do pliku z jar-em (GeneratorTransakcji\build\libs)
 2. Wpisz jakie pliki JSON chcesz wygenerować według parametrów. Przykładowo: 
 ```
-java -jar transaction-generator.jar -customerIds 1:20 -dateRange "2018-03-08T00:00:00.000-0100":"2018-03-08T23:59:59.999-0100" -itemsFile items.csv -itemsCount 5:15 -itemsQuantity 1:30 -eventsCount 1000 -outDir ./output
+java -jar transaction-generator.jar -customerIds 1:20 -dateRange "2018-03-08T00:00:00.000-0100":"2018-03-08T23:59:59.999-0100" -itemsFile items.csv -itemsCount 5:15 -itemsQuantity 1:30 -eventsCount 10 -outDir ./output -format yaml
 ```
 
 ## Parametry:
@@ -22,3 +22,5 @@ itemsQuantity: zakres z jakiego będzie generowana ilość kupionych produktów 
 eventsCount: ilość transakcji (pojedynczych plików) do wygenerowania. Domyślnie 100.
 
 outDir: katalog, do którego mają być zapisane pliki. Domyślnie aktualny katalog roboczy.
+
+format: format pliku wyjściowego (json/xml/yaml)
