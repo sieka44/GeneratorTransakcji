@@ -4,10 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.XML;
 import org.json.simple.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 
+@Service("xml")
 public class FileXmlWriter implements FileWriter {
     private static final Logger LOGGER = LogManager.getLogger(FileXmlWriter.class.getName());
 

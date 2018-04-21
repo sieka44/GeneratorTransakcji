@@ -1,29 +1,18 @@
 import dataGenerator.Generator;
-import inputParser.Cli;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = ConfigSpringTest.class)
 public class GeneratorTransakcjiTest {
-
-    private static final Logger LOGGER = LogManager.getLogger(GeneratorTransakcjiTest.class.getName());
+    @Autowired
+    Generator generator;
 
     @Test
-    public void jsonGeneratorTest(){
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        ZonedDateTime date = ZonedDateTime.now();
-        Generator generator = new Generator("1:20",
-                date.withHour(23).withMinute(59).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter),
-                "1:2",
-                "1:5",
-                "1",
-                ""
-                );
-        generator.setItemsFile("items.csv");
+    public void jsonGeneratorTest() {
         generator.generateEvents();
     }
 

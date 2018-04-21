@@ -3,14 +3,15 @@ package inputParser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+@Service
 public class FileInputController {
     private static final Logger LOGGER = LogManager.getLogger(FileInputController.class.getName());
     private List<Product> listOfProducts;
@@ -37,10 +38,9 @@ public class FileInputController {
             }
             LOGGER.info("Successful read file.");
 
-        } catch (FileNotFoundException e){
-            LOGGER.error("No source csv.",new FileNotFoundException("FileNotFoundExcept"));
-        }
-        catch (IOException e) {
+        } catch (FileNotFoundException e) {
+            LOGGER.error("No source csv.", new FileNotFoundException("FileNotFoundExcept"));
+        } catch (IOException e) {
             LOGGER.error("Unexpected Error:" + e.getMessage());
             e.printStackTrace();
         }
@@ -49,7 +49,7 @@ public class FileInputController {
     public BigDecimal getSumAndReset() {
         BigDecimal outcome = sum;
         sum = BigDecimal.ZERO;
-        LOGGER.trace("sum has been reset: " + outcome + " -> "+ sum);
+        LOGGER.trace("sum has been reset: " + outcome + " -> " + sum);
         return outcome;
     }
 
@@ -60,10 +60,10 @@ public class FileInputController {
             jsonObject.put("name", product.getName());
             jsonObject.put("quantity", quantity);
             jsonObject.put("price", product.getPrice());
-            sum = BigDecimal.valueOf( product.getPrice()).multiply(quantity).add(sum);
+            sum = BigDecimal.valueOf(product.getPrice()).multiply(quantity).add(sum);
         }
         if (jsonObject.isEmpty()) LOGGER.warn("Empty JSONObject.");
-        else LOGGER.debug("GetRandomObject returned: "+jsonObject.toJSONString());
+        else LOGGER.debug("GetRandomObject returned: " + jsonObject.toJSONString());
 
         return jsonObject;
     }

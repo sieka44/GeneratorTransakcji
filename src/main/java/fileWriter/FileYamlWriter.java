@@ -6,13 +6,16 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+@Service("yaml")
 public class FileYamlWriter implements fileWriter.FileWriter {
     private static final Logger LOGGER = LogManager.getLogger(FileYamlWriter.class.getName());
+
     @Override
     public void saveData(JSONObject json, int idNumber, String outDir) {
         try {
@@ -26,9 +29,9 @@ public class FileYamlWriter implements fileWriter.FileWriter {
             String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
             fileWriter.write(jsonAsYaml);
             fileWriter.close();
-            LOGGER.trace("YAML"+idNumber+" saved successfully");
+            LOGGER.trace("YAML" + idNumber + " saved successfully");
         } catch (IOException e) {
-            LOGGER.error("Error with saving Yaml file nr : "+idNumber);
+            LOGGER.error("Error with saving Yaml file nr : " + idNumber);
             e.printStackTrace();
         }
     }
