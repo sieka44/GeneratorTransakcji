@@ -1,5 +1,5 @@
 import dataGenerator.Generator;
-import fileWriter.FileJsonWriter;
+import fileWriter.FileXmlWriter;
 import inputParser.FileInputController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +18,11 @@ public class ConfigSpringTest {
     public Generator generator() {
         return new Generator("1:20",
                 ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")) + ":" + ZonedDateTime.now().plusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")),
-                "1:2",
+                "2:2",
                 "1:5",
                 "1",
                 "",
-                new FileJsonWriter()
+                new FileXmlWriter()
         );
     }
 }

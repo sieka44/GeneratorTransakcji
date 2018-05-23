@@ -1,8 +1,7 @@
 import dataGenerator.Generator;
+import dataGenerator.Transaction;
 import fileWriter.FileJsonWriter;
 import inputParser.FileInputController;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,13 +11,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-
-import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class GeneratorTest {
@@ -33,8 +29,8 @@ public class GeneratorTest {
     public void wrongDateFormatTest() {
         generator = new Generator("", LocalDateTime.now() + ":" + LocalDateTime.now().plusDays(1), "", "", "-19", "", new FileJsonWriter());
         MockitoAnnotations.initMocks(this);
-        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
-        generator.generateOneJson();
+//        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
+        generator.generateOneTransaction();
     }
 
 
@@ -46,21 +42,16 @@ public class GeneratorTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime startDate = ZonedDateTime.now().withFixedOffsetZone();
         ZonedDateTime endDate = startDate.plusDays(1);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("name", "objName");
-        jsonObject.put("quantity", "objNumber");
-        jsonObject.put("price", "objPrice");
-        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
-        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(jsonObject);
+//        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
+//        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(jsonObject);
         generator = new Generator(min + ":" + max, startDate.format(formatter) + ":" + endDate.format(formatter), min + ":" + max, "", "", "", new FileJsonWriter());
         MockitoAnnotations.initMocks(this);
-        JSONObject json = generator.generateOneJson();
-        int customerID = Integer.parseInt(json.get("customer_id").toString());
-        ZonedDateTime dateTime = ZonedDateTime.parse(json.get("timestamp").toString());
-        int itemsCount = ((JSONArray) json.get("items")).size();
+        Transaction transaction = generator.generateOneTransaction();
+        //ZonedDateTime dateTime = transaction.getTimestamp();
+        int itemsCount = transaction.getItems().length;
 
-        Assert.assertTrue(min <= customerID && customerID <= max);
-        Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));
+        Assert.assertTrue(min <= transaction.getCustomer_id() && transaction.getCustomer_id() <= max);
+        //Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));
         Assert.assertTrue(min <= itemsCount && itemsCount <= max);
     }
 
@@ -71,8 +62,8 @@ public class GeneratorTest {
         generator = new Generator("", "", "", "", Integer.toString(eventCount), "", jsonWriter);
         MockitoAnnotations.initMocks(this);
         Generator uut = Mockito.spy(generator);
-        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(new JSONObject());
-        uut.generateEvents();
-        Mockito.verify(uut, Mockito.times(eventCount)).generateOneJson();
+//        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(new JSONObject());
+        uut.generateTransactions();
+        Mockito.verify(uut, Mockito.times(eventCount)).generateOneTransaction();
     }
 }

@@ -13,7 +13,7 @@ public class GeneratorTransakcjiTest {
 
     @Test
     public void jsonGeneratorTest() {
-        generator.generateEvents();
+        generator.generateTransactions();
     }
 
 }

@@ -51,16 +51,8 @@ public class Cli {
         if (!cmd.hasOption("format")) LOGGER.warn("Seting default value for format.");
         initSpring();
         Generator generator = (Generator) (appContext.getBean("generator"));
-        generator.generateEvents();
+        generator.generateTransactions();
     }
-//    private static Cli initSpring(){
-//        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-//        applicationContext.registerBean(Cli.class);
-//        applicationContext.scan("fileWriter");
-//        applicationContext.refresh();
-//        GenericApplicationContext ctx = applicationContext;
-//        return (Cli) ctx.getBean("cli");
-//    }
 
     private void initSpring() {
         ZonedDateTime date = ZonedDateTime.now();

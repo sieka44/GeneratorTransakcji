@@ -14,7 +14,7 @@
     </appenders>
 
     <loggers>
-        <root level="debug">
+        <root level="trace">
             <appender-ref ref="JSONConsole" level="info"/>
             <appender-ref ref="MyFile" level="trace"/>
         </root>

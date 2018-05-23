@@ -1,5 +1,5 @@
+import dataGenerator.Item;
 import inputParser.FileInputController;
-import org.json.simple.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,27 +9,24 @@ public class FileInputControllerTest {
     FileInputController uut = new FileInputController("src\\test\\resources\\underTest.csv");
 
     @Test
-    public void getRandomObjectTest() {
+    public void getRandomItemTest() {
         //given
-        BigDecimal amount =  BigDecimal.valueOf(431);
+        BigDecimal amount = BigDecimal.valueOf(431);
         //when
-        JSONObject json = uut.getRandomObject(amount);
-        String name = json.get("name").toString();
-        String quantity = json.get("quantity").toString();
-        String price = json.get("price").toString();
+        Item item = uut.getRandomItem(amount);
         BigDecimal sum = BigDecimal.valueOf(431).multiply(BigDecimal.valueOf(2.53));
         //then
-        Assert.assertEquals(uut.getSumAndReset(), sum);
-        Assert.assertEquals("\"TestObjectNR1\"", name);
-        Assert.assertEquals("431", quantity);
-        Assert.assertEquals("2.53", price);
+        Assert.assertEquals(sum,uut.getSumAndReset());
+        Assert.assertEquals("TestObjectNR1", item.getName());
+        Assert.assertEquals(BigDecimal.valueOf(431), item.getQuantity());
+        Assert.assertEquals(BigDecimal.valueOf(2.53), item.getPrice());
     }
 
     @Test
     public void getJsonFromNullFile() {
         uut = new FileInputController("notAPath_String[[");
-        JSONObject json = uut.getRandomObject(BigDecimal.ZERO);
-        Assert.assertEquals(new JSONObject(), json);
+        Item json = uut.getRandomItem(BigDecimal.ZERO);
+        Assert.assertEquals(null, json);
     }
 
 }

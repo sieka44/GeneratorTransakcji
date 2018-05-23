@@ -4,8 +4,6 @@ import fileWriter.FileWriter;
 import inputParser.FileInputController;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -40,10 +38,6 @@ public class Generator {
         this.writer = fileWriter;
     }
 
-    public void setEventsCount(String eventsCount) {
-        this.eventsCount = eventsCount;
-    }
-
     private int generateIntegerData(String data) {
         String[] minMax = data.split(":");
         Random rnd = new Random();
@@ -64,7 +58,7 @@ public class Generator {
         return LOGGER.traceExit(beginTime + (long) (Math.random() * diff));
     }
 
-    private ZonedDateTime generateDate() {
+    private String generateDate() {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime outputDate = null;
@@ -80,37 +74,35 @@ public class Generator {
         } else {
             LOGGER.error("Cannot parse to date: " + date);
         }
-        return LOGGER.traceExit(outputDate);
+        return LOGGER.traceExit(outputDate.toString());
     }
 
-    private JSONArray generateItems() {
+    private Item[] generateItemsTable() {
         int amount = generateIntegerData(itemsCount);
         LOGGER.trace("Drawn items quantity: " + amount);
-        JSONArray array = new JSONArray();
+        Item[] itemArray = new Item[amount];
         for (int i = 0; i < amount; i++) {
-            array.add(fileInputController.getRandomObject(BigDecimal.valueOf(generateIntegerData(itemsQuantity))));
+            itemArray[i] = fileInputController.getRandomItem(BigDecimal.valueOf(generateIntegerData(itemsQuantity)));
         }
-        return LOGGER.traceExit(array);
+        return LOGGER.traceExit(itemArray);
     }
 
-    public JSONObject generateOneJson() {
-        JSONObject json = new JSONObject();
-        json.put("id", generateIntegerData("1:10"));
-        json.put("timestamp", generateDate());
-        json.put("customer_id", generateIntegerData(customerIds));
-        JSONArray array = generateItems();
-        json.put("items", array);
-        json.put("sum", fileInputController.getSumAndReset());
-        LOGGER.info("JSON generated:" + json.toJSONString());
-        return json;
+    public Transaction generateOneTransaction() {
+        return new Transaction(
+                generateIntegerData("1:10"),//TODO:poprawić
+                generateDate(),
+                generateIntegerData(customerIds),
+                generateItemsTable(),
+                fileInputController.getSumAndReset()
+        );
     }
 
-    public void generateEvents() {
+    public void generateTransactions() {
         int events = Integer.parseInt(eventsCount);
         LOGGER.trace("Events: " + events);
         for (int i = 0; i < events; i++) {
-            JSONObject json = generateOneJson();
-            writer.saveData(json, i, outDir);
+            Transaction transaction = generateOneTransaction();
+            writer.saveTransaction(transaction, i, outDir);
         }
     }
 

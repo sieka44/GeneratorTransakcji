@@ -1,8 +1,8 @@
 package inputParser;
 
+import dataGenerator.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -33,7 +33,7 @@ public class FileInputController {
                 LOGGER.debug("Current Line to parse:" + currLine);
                 if (currLine != null) {
                     String[] product = currLine.split(",");
-                    listOfProducts.add(new Product(product[0], Double.parseDouble(product[1])));
+                    listOfProducts.add(new Product(product[0], BigDecimal.valueOf(Double.parseDouble(product[1]))));
                 } else break;
             }
             LOGGER.info("Successful read file.");
@@ -53,18 +53,14 @@ public class FileInputController {
         return outcome;
     }
 
-    public JSONObject getRandomObject(BigDecimal quantity) {
-        JSONObject jsonObject = new JSONObject();
+    public Item getRandomItem(BigDecimal quantity) {
+        Item item = null;
         if (listOfProducts.size() > 0) {
             Product product = listOfProducts.get(rnd.nextInt(listOfProducts.size()));
-            jsonObject.put("name", product.getName());
-            jsonObject.put("quantity", quantity);
-            jsonObject.put("price", product.getPrice());
-            sum = BigDecimal.valueOf(product.getPrice()).multiply(quantity).add(sum);
-        }
-        if (jsonObject.isEmpty()) LOGGER.warn("Empty JSONObject.");
-        else LOGGER.debug("GetRandomObject returned: " + jsonObject.toJSONString());
-
-        return jsonObject;
+            item = new Item(product.getName().replace("\"",""), quantity, product.getPrice());
+            sum = item.getPrice().multiply(quantity).add(sum);
+            LOGGER.debug("GetRandomObject returned: " + item.toString());
+        } else LOGGER.warn("Empty Item.");
+        return item;
     }
 }
