@@ -24,3 +24,13 @@ eventsCount: ilość transakcji (pojedynczych plików) do wygenerowania. Domyśl
 outDir: katalog, do którego mają być zapisane pliki. Domyślnie aktualny katalog roboczy.
 
 format: format pliku wyjściowego (json/xml/yaml)
+
+## Docker:
+Aby uruchomić dockera proszę skopiować własny plik properties do pliku <code> /storage/generator.properties </code> oraz własny plik csv (można posłużyć się przykładowym zawartym w folderze <code> src/main/java/Docker </code> ) następnie będąc w katalogu projektu uruchomić:
+```
+docker build --tag generator-transakcji .
+```
+oraz 
+```
+docker run generator-transakcji
+```
