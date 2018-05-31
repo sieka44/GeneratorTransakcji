@@ -28,7 +28,8 @@ public class Generator {
     private String eventsCount;
     private String outDir;
 
-    public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir, FileWriter fileWriter) {//}, FileWriter fileWriter, FileInputController fileController) {
+
+    public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir, FileWriter fileWriter) {
         this.customerIds = customerIds;
         this.date = date;
         this.itemsCount = itemsCount;
@@ -73,6 +74,7 @@ public class Generator {
             outputDate = ZonedDateTime.of(LocalDateTime.ofInstant(instant, startDate.getZone()), startDate.getZone());
         } else {
             LOGGER.error("Cannot parse to date: " + date);
+            return "";
         }
         return LOGGER.traceExit(outputDate.toString());
     }
@@ -87,9 +89,9 @@ public class Generator {
         return LOGGER.traceExit(itemArray);
     }
 
-    public Transaction generateOneTransaction() {
+    public Transaction generateOneTransaction(int id) {
         return new Transaction(
-                generateIntegerData("1:10"),//TODO:poprawić
+                id,
                 generateDate(),
                 generateIntegerData(customerIds),
                 generateItemsTable(),
@@ -101,7 +103,7 @@ public class Generator {
         int events = Integer.parseInt(eventsCount);
         LOGGER.trace("Events: " + events);
         for (int i = 0; i < events; i++) {
-            Transaction transaction = generateOneTransaction();
+            Transaction transaction = generateOneTransaction(i);
             writer.saveTransaction(transaction, i, outDir);
         }
     }

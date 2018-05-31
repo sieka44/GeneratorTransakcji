@@ -16,7 +16,7 @@ public class FileInputControllerTest {
         Item item = uut.getRandomItem(amount);
         BigDecimal sum = BigDecimal.valueOf(431).multiply(BigDecimal.valueOf(2.53));
         //then
-        Assert.assertEquals(sum,uut.getSumAndReset());
+        Assert.assertEquals(sum, uut.getSumAndReset());
         Assert.assertEquals("TestObjectNR1", item.getName());
         Assert.assertEquals(BigDecimal.valueOf(431), item.getQuantity());
         Assert.assertEquals(BigDecimal.valueOf(2.53), item.getPrice());

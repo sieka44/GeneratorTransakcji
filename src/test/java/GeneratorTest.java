@@ -29,8 +29,7 @@ public class GeneratorTest {
     public void wrongDateFormatTest() {
         generator = new Generator("", LocalDateTime.now() + ":" + LocalDateTime.now().plusDays(1), "", "", "-19", "", new FileJsonWriter());
         MockitoAnnotations.initMocks(this);
-//        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
-        generator.generateOneTransaction();
+        generator.generateOneTransaction(1);
     }
 
 
@@ -42,16 +41,14 @@ public class GeneratorTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime startDate = ZonedDateTime.now().withFixedOffsetZone();
         ZonedDateTime endDate = startDate.plusDays(1);
-//        Mockito.when(fileInputController.getSumAndReset()).thenReturn(BigDecimal.ZERO);
-//        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(jsonObject);
         generator = new Generator(min + ":" + max, startDate.format(formatter) + ":" + endDate.format(formatter), min + ":" + max, "", "", "", new FileJsonWriter());
         MockitoAnnotations.initMocks(this);
-        Transaction transaction = generator.generateOneTransaction();
-        //ZonedDateTime dateTime = transaction.getTimestamp();
+        Transaction transaction = generator.generateOneTransaction(1);
+        ZonedDateTime dateTime = ZonedDateTime.parse(transaction.getTimestamp());
         int itemsCount = transaction.getItems().length;
 
         Assert.assertTrue(min <= transaction.getCustomer_id() && transaction.getCustomer_id() <= max);
-        //Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));
+        Assert.assertTrue(dateTime.isAfter(startDate) && dateTime.isBefore(endDate));
         Assert.assertTrue(min <= itemsCount && itemsCount <= max);
     }
 
@@ -62,8 +59,9 @@ public class GeneratorTest {
         generator = new Generator("", "", "", "", Integer.toString(eventCount), "", jsonWriter);
         MockitoAnnotations.initMocks(this);
         Generator uut = Mockito.spy(generator);
-//        Mockito.when(fileInputController.getRandomObject(any())).thenReturn(new JSONObject());
         uut.generateTransactions();
-        Mockito.verify(uut, Mockito.times(eventCount)).generateOneTransaction();
+        for (int i = 0; i < eventCount; i++) {
+            Mockito.verify(uut, Mockito.times(1)).generateOneTransaction(i);
+        }
     }
 }

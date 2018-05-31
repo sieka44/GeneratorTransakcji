@@ -1,4 +1,5 @@
 import dataGenerator.Generator;
+import fileWriter.FileJsonWriter;
 import fileWriter.FileXmlWriter;
 import inputParser.FileInputController;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +23,7 @@ public class ConfigSpringTest {
                 "1:5",
                 "1",
                 "",
-                new FileXmlWriter()
+                new FileJsonWriter()
         );
     }
 }

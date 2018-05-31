@@ -24,12 +24,12 @@ public class FileXmlWriter implements FileWriter {
         File parent = file.getParentFile();
         parent.mkdirs();
         XStream xStream = new XStream();
-        xStream.alias("Transaction",Transaction.class);
+        xStream.alias("Transaction", Transaction.class);
         xStream.alias("Item", Item.class);
         ZonedDateConverter conv = new ZonedDateConverter();
         xStream.registerConverter(conv);
         try {
-            xStream.toXML(transaction,new java.io.FileWriter(file));
+            xStream.toXML(transaction, new java.io.FileWriter(file));
             LOGGER.trace("XML" + idNumber + " saved successfully");
         } catch (IOException e) {
             LOGGER.error("Error with saving Xml file nr : " + idNumber);
@@ -40,10 +40,10 @@ public class FileXmlWriter implements FileWriter {
     private class ZonedDateConverter extends AbstractSingleValueConverter {
 
         public boolean canConvert(Class type) {
-            return (type!=null) && ZonedDateTime.class.getPackage().equals(type.getPackage());
+            return (type != null) && ZonedDateTime.class.getPackage().equals(type.getPackage());
         }
 
-        public String toString (Object source) {
+        public String toString(Object source) {
             return source.toString();
         }
 

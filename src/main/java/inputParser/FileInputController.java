@@ -33,7 +33,7 @@ public class FileInputController {
                 LOGGER.debug("Current Line to parse:" + currLine);
                 if (currLine != null) {
                     String[] product = currLine.split(",");
-                    listOfProducts.add(new Product(product[0], BigDecimal.valueOf(Double.parseDouble(product[1]))));
+                    listOfProducts.add(new Product(product[0], new BigDecimal(product[1])));
                 } else break;
             }
             LOGGER.info("Successful read file.");
@@ -57,7 +57,7 @@ public class FileInputController {
         Item item = null;
         if (listOfProducts.size() > 0) {
             Product product = listOfProducts.get(rnd.nextInt(listOfProducts.size()));
-            item = new Item(product.getName().replace("\"",""), quantity, product.getPrice());
+            item = new Item(product.getName().replace("\"", ""), quantity, product.getPrice());
             sum = item.getPrice().multiply(quantity).add(sum);
             LOGGER.debug("GetRandomObject returned: " + item.toString());
         } else LOGGER.warn("Empty Item.");

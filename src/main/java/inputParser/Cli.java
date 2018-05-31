@@ -1,6 +1,7 @@
 package inputParser;
 
 import dataGenerator.Generator;
+import dataGenerator.GeneratorValues;
 import fileWriter.FileWriter;
 import org.apache.commons.cli.*;
 import org.apache.logging.log4j.LogManager;
@@ -16,9 +17,7 @@ import java.time.format.DateTimeFormatter;
 public class Cli {
     private static final Logger LOGGER = LogManager.getLogger(Cli.class.getName());
     private final Options options = new Options();
-    @Autowired
-    GenericApplicationContext appContext;
-
+    private GeneratorValues generatorValues;
     CommandLine cmd;
 
     public Cli() {
@@ -39,7 +38,8 @@ public class Cli {
         LOGGER.info("Options has been build");
     }
 
-    public void parse(String[] args) throws ParseException {
+    public GeneratorValues parse(String[] args) throws ParseException {
+        LOGGER.debug("using Cli");
         CommandLineParser parser = new BasicParser();
         cmd = parser.parse(options, args);
         if (!cmd.hasOption("customersIds")) LOGGER.warn("Seting default value for customersIds.");
@@ -49,30 +49,23 @@ public class Cli {
         if (!cmd.hasOption("eventsCount")) LOGGER.warn("Seting default value for eventsCount.");
         if (!cmd.hasOption("outDir")) LOGGER.warn("Seting default value for outDir.");
         if (!cmd.hasOption("format")) LOGGER.warn("Seting default value for format.");
-        initSpring();
-        Generator generator = (Generator) (appContext.getBean("generator"));
-        generator.generateTransactions();
-    }
-
-    private void initSpring() {
         ZonedDateTime date = ZonedDateTime.now();
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        AnnotationConfigApplicationContext applicationContext = new AnnotationConfigApplicationContext();
-        applicationContext.registerBean(FileInputController.class, () -> new FileInputController(cmd.getOptionValue("itemsFile", "items.csv")));
-        applicationContext.scan("fileWriter");
-        appContext = applicationContext;
-        appContext.refresh();
-        appContext.registerBean(Generator.class, () -> new Generator(
+        generatorValues = new GeneratorValues(
+                cmd.getOptionValue("itemsFile", "items.csv"),
                 cmd.getOptionValue("customersIds", "1:20"),
                 cmd.getOptionValue("dateRange", date.withHour(0).withMinute(0).format(formatter) + ":" + date.withHour(23).withMinute(59).format(formatter)),
                 cmd.getOptionValue("itemsCount", "1:5"),
                 cmd.getOptionValue("itemsQuantity", "1:5"),
                 cmd.getOptionValue("eventsCount", "100"),
                 cmd.getOptionValue("outDir", ""),
-                (FileWriter) applicationContext.getBean(cmd.getOptionValue("format", "json"))
-        ));
+                cmd.getOptionValue("format", "json")
+        );
+        return generatorValues;
     }
+
+
 
 }
 
