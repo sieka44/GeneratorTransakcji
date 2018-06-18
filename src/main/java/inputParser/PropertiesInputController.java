@@ -37,7 +37,10 @@ public class PropertiesInputController {
                     properties.getProperty("itemsQuantity") != null ? properties.getProperty("itemsQuantity") : "1:5",
                     properties.getProperty("eventsCount") != null ? properties.getProperty("eventsCount") : "100",
                     properties.getProperty("outDir") != null ? properties.getProperty("outDir") : "",
-                    properties.getProperty("format") != null ? properties.getProperty("format") : "json"
+                    properties.getProperty("format") != null ? properties.getProperty("format") : "json",
+                    properties.getProperty("broker") != null ? properties.getProperty("broker") : "",
+                    properties.getProperty("queue") != null ? properties.getProperty("queue") : "",
+                    properties.getProperty("topic") != null ? properties.getProperty("topic") : ""
             );
 
         } catch (IOException e) {

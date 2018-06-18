@@ -1,3 +1,4 @@
+import controler.MqController;
 import dataGenerator.Generator;
 import dataGenerator.Transaction;
 import fileWriter.FileJsonWriter;
@@ -27,7 +28,7 @@ public class GeneratorTest {
 
     @Test(expected = DateTimeParseException.class)
     public void wrongDateFormatTest() {
-        generator = new Generator("", LocalDateTime.now() + ":" + LocalDateTime.now().plusDays(1), "", "", "-19", "", new FileJsonWriter());
+        generator = new Generator("", LocalDateTime.now() + ":" + LocalDateTime.now().plusDays(1), "", "", "-19", "", new FileJsonWriter(),new MqController("","",""));
         MockitoAnnotations.initMocks(this);
         generator.generateOneTransaction(1);
     }
@@ -41,7 +42,7 @@ public class GeneratorTest {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
         ZonedDateTime startDate = ZonedDateTime.now().withFixedOffsetZone();
         ZonedDateTime endDate = startDate.plusDays(1);
-        generator = new Generator(min + ":" + max, startDate.format(formatter) + ":" + endDate.format(formatter), min + ":" + max, "", "", "", new FileJsonWriter());
+        generator = new Generator(min + ":" + max, startDate.format(formatter) + ":" + endDate.format(formatter), min + ":" + max, "", "", "", new FileJsonWriter(),new MqController("","",""));
         MockitoAnnotations.initMocks(this);
         Transaction transaction = generator.generateOneTransaction(1);
         ZonedDateTime dateTime = ZonedDateTime.parse(transaction.getTimestamp());
@@ -56,7 +57,7 @@ public class GeneratorTest {
     public void generateEventsTest() {
         int eventCount = 10;
         FileJsonWriter jsonWriter = Mockito.mock(FileJsonWriter.class);
-        generator = new Generator("", "", "", "", Integer.toString(eventCount), "", jsonWriter);
+        generator = new Generator("", "", "", "", Integer.toString(eventCount), "", jsonWriter,new MqController("","",""));
         MockitoAnnotations.initMocks(this);
         Generator uut = Mockito.spy(generator);
         uut.generateTransactions();

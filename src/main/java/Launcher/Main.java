@@ -1,5 +1,6 @@
 package Launcher;
 
+import controler.MqController;
 import dataGenerator.Generator;
 import dataGenerator.GeneratorValues;
 import fileWriter.FileWriter;
@@ -50,7 +51,8 @@ public class Main {
                 generatorValues.getItemsQuantity(),
                 generatorValues.getEventsCount(),
                 generatorValues.getOutDir(),
-                (FileWriter) applicationContext.getBean(generatorValues.getFormat())
+                (FileWriter) applicationContext.getBean(generatorValues.getFormat()),
+                new MqController(generatorValues.getBroker(),generatorValues.getQueue(),generatorValues.getTopic())
         ));
 
         return (Generator) applicationContext.getBean("generator");

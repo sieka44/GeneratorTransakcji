@@ -1,5 +1,6 @@
 package dataGenerator;
 
+import controler.MqController;
 import fileWriter.FileWriter;
 import inputParser.FileInputController;
 import org.apache.logging.log4j.LogManager;
@@ -27,9 +28,10 @@ public class Generator {
     private String itemsQuantity;
     private String eventsCount;
     private String outDir;
+    private MqController mqController;
 
 
-    public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir, FileWriter fileWriter) {
+    public Generator(String customerIds, String date, String itemsCount, String itemsQuantity, String eventsCount, String outDir, FileWriter fileWriter, MqController controller) {
         this.customerIds = customerIds;
         this.date = date;
         this.itemsCount = itemsCount;
@@ -37,6 +39,7 @@ public class Generator {
         this.eventsCount = eventsCount;
         this.outDir = outDir;
         this.writer = fileWriter;
+        this.mqController = controller;
     }
 
     private int generateIntegerData(String data) {
@@ -105,7 +108,12 @@ public class Generator {
         for (int i = 0; i < events; i++) {
             Transaction transaction = generateOneTransaction(i);
             writer.saveTransaction(transaction, i, outDir);
+            sendTransaction(writer.getTransactionAsString(transaction));
         }
+    }
+
+    private void sendTransaction(String transaction){
+        mqController.sendTransaction(transaction);
     }
 
 }

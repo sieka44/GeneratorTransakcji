@@ -1,3 +1,4 @@
+import controler.MqController;
 import dataGenerator.Generator;
 import fileWriter.FileJsonWriter;
 import fileWriter.FileXmlWriter;
@@ -23,7 +24,8 @@ public class ConfigSpringTest {
                 "1:5",
                 "1",
                 "",
-                new FileJsonWriter()
+                new FileJsonWriter(),
+                new MqController("","","")
         );
     }
 }

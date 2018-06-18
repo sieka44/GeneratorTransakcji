@@ -35,6 +35,9 @@ public class Cli {
         options.addOption("eventsCount", true, "range of generated product amount");
         options.addOption("outDir", true, "output dir");
         options.addOption("format", true, "output format");
+        options.addOption("broker",true,"URL of broker");
+        options.addOption("queue",true,"queue name");
+        options.addOption("topic",true,"topic name");
         LOGGER.info("Options has been build");
     }
 
@@ -60,7 +63,10 @@ public class Cli {
                 cmd.getOptionValue("itemsQuantity", "1:5"),
                 cmd.getOptionValue("eventsCount", "100"),
                 cmd.getOptionValue("outDir", ""),
-                cmd.getOptionValue("format", "json")
+                cmd.getOptionValue("format", "json"),
+                cmd.getOptionValue("broker",""),
+                cmd.getOptionValue("queue",""),
+                cmd.getOptionValue("topic","")
         );
         return generatorValues;
     }

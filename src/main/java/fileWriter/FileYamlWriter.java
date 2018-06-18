@@ -1,5 +1,6 @@
 package fileWriter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import dataGenerator.Transaction;
@@ -29,5 +30,18 @@ public class FileYamlWriter implements fileWriter.FileWriter {
             e.printStackTrace();
             LOGGER.error("Error with saving Yaml file nr : " + idNumber);
         }
+    }
+
+    @Override
+    public String getTransactionAsString(Transaction transaction) {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try {
+            mapper.writeValueAsString(transaction);
+            LOGGER.trace("YAML parsed saved successfully");
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Error with parsing Yaml", e);
+            e.printStackTrace();
+        }
+        return "";
     }
 }

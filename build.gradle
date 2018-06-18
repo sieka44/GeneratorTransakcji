@@ -57,6 +57,8 @@ dependencies {
     compileOnly group: "org.projectlombok", name: "lombok", version: "1.16.20"
     //XML
     compile group: 'com.thoughtworks.xstream', name: 'xstream', version: '1.4.2'
+    //broker
+    compile group: 'org.apache.activemq', name: 'activemq-client', version: '5.9.0'
 
     testCompile group: 'org.springframework', name: 'spring-test', version: '5.0.4.RELEASE'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'

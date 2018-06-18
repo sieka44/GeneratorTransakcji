@@ -14,5 +14,8 @@ public class GeneratorValues {
     final String eventsCount;
     final String outDir;
     final String format;
+    final String broker;
+    final String queue;
+    final String topic;
 
 }

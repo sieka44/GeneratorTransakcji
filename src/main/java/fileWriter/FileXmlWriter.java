@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.time.ZonedDateTime;
 
 @Service("xml")
-public class FileXmlWriter implements FileWriter {
+public class FileXmlWriter  implements FileWriter {
     private static final Logger LOGGER = LogManager.getLogger(FileXmlWriter.class.getName());
 
     @Override
@@ -35,6 +35,16 @@ public class FileXmlWriter implements FileWriter {
             LOGGER.error("Error with saving Xml file nr : " + idNumber);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getTransactionAsString(Transaction transaction) {
+        XStream xStream = new XStream();
+        xStream.alias("Transaction", Transaction.class);
+        xStream.alias("Item", Item.class);
+        ZonedDateConverter conv = new ZonedDateConverter();
+        xStream.registerConverter(conv);
+        return xStream.toXML(transaction);
     }
 
     private class ZonedDateConverter extends AbstractSingleValueConverter {

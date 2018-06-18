@@ -1,5 +1,6 @@
 package fileWriter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dataGenerator.Transaction;
 import org.apache.logging.log4j.LogManager;
@@ -25,5 +26,17 @@ public class FileJsonWriter implements fileWriter.FileWriter {
             LOGGER.error("Error with saving json file nr : " + idNumber);
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public String getTransactionAsString(Transaction transaction) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(transaction);
+        } catch (JsonProcessingException e) {
+            LOGGER.error("Error with parse json.",e);
+            e.printStackTrace();
+        }
+        return "";
     }
 }
